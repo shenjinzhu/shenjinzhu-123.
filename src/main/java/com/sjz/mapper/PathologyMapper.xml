@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.sjz.dao.PathologyDao">  
+<!--设置domain类和数据库中表的字段一一对应，注意数据库字段和domain类中的字段名称不致，此处一定要！-->  
+    <resultMap id="BaseResultMap" type="com.sjz.entity.Pathology">  
+        <id column="pathology_id" property="pathology_id" jdbcType="INTEGER" /> 
+         <result column="p_name" property="p_name" jdbcType="VARCHAR" />   
+        <result column="sysmptom" property="sysmptom" jdbcType="VARCHAR" />  
+        <result column="pintroduce" property="pintroduce" jdbcType="VARCHAR" />
+        <result column="medical_use"      property="medical_use" jdbcType="VARCHAR"/>  
+        <result column="matters_Needing_Attention"   property="matters_Needing_Attention" jdbcType="VARCHAR"/>  
+    </resultMap>  
+    
+    <insert id="insertPathology" parameterType="com.sjz.entity.Pathology">
+    	insert into pathology(
+    		sysmptom,p_name,pintroduce,medical_use,matters_Needing_Attention
+    	)values(
+    		#{sysmptom},#{p_name},#{pintroduce},#{medical_use},#{matters_Needing_Attention}
+    	)
+    </insert>
+    
+    <select id="selectPathologyById" parameterType="int" resultType="com.sjz.entity.Pathology">
+    	select * from pathology where pathology_id=#{pathology_id}
+    </select>
+    
+    <select id="selectPathologyBySys" parameterType="java.lang.String" resultMap="BaseResultMap">  
+    SELECT *  
+    FROM pathology  
+    WHERE 1 = 1  
+    <if test="sysmptom != null and sysmptom !=''">  
+        AND sysmptom like #{sysmptom,jdbcType=VARCHAR}
+    </if>  
+    ORDER BY pathology_id
+	</select>  
+	
+    <update id="updatePathology" parameterType="com.sjz.entity.Pathology">
+    update pathology
+    	<trim prefix="SET" suffixOverrides=","> 
+    		<if test="sysmptom!=null">
+    			sysmptom=#{sysmptom},
+    		</if>
+    		<if test="p_name!=null">
+    			p_name=#{p_name},
+    		</if>
+    		<if test="pintroduce!=null">
+    			pintroduce=#{pintroduce},
+    		</if>
+    		<if test="medical_use!=null">
+    			medical_use=#{medical_use},
+    		</if>
+    		<if test="matters_Needing_Attention!=null">
+    			matters_Needing_Attention=#{matters_Needing_Attention},
+    		</if>
+    		
+    	</trim>
+    	where pathology_id=#{pathology_id}
+    </update>
+    <delete id="deletePathology" parameterType="int">
+    	delete from pathology where pathology_id=#{pathology_id}
+    </delete>
+    
+</mapper>  

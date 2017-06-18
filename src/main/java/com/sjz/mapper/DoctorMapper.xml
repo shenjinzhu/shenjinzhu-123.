@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.sjz.dao.DoctorDao">  
+<!--设置domain类和数据库中表的字段一一对应，注意数据库字段和domain类中的字段名称不致，此处一定要！-->  
+    <resultMap id="BaseResultMap" type="com.sjz.entity.Doctor">  
+        <id column="doctor_id" property="doctor_id" jdbcType="INTEGER" />  
+        <result column="name" property="name" jdbcType="VARCHAR" />  
+        <result column="major" property="major" jdbcType="VARCHAR" />
+        <result column="hospital"      property="hospital" jdbcType="VARCHAR"/>  
+        <result column="workTime"      property="workTime" jdbcType="VARCHAR"/>  
+        <result column="id"    property="id" jdbcType="INTEGER"/>  
+        <result column="now"    property="now" jdbcType="VARCHAR"/>  
+        <result column="bianhao"    property="bianhao" jdbcType="VARCHAR"/>  
+    </resultMap>  
+    <insert id="addDoctor" parameterType="com.sjz.entity.Doctor">
+    	insert into doctor 
+    	(name,major,hospital,workTime,id,now,bianhao)
+    	values(
+    	#{name},#{major},#{hospital},#{workTime},#{id},#{now},#{bianhao}
+    	)
+    </insert>
+    <select id="selectDocByPersonId" parameterType="int" resultType="com.sjz.entity.Doctor">
+    	select * from doctor where id=#{id}
+    </select>
+    <select id="selectDoctorById" parameterType="int" resultType="com.sjz.entity.Doctor">
+    	select * from doctor where doctor_id=#{doctor_id}
+    </select>
+    
+    <select id="selectDoctorByName" parameterType="java.lang.String" resultMap="BaseResultMap">  
+    SELECT *  
+    FROM doctor d join person p on d.id=p.id  
+    WHERE 1 = 1  
+    <if test="name != null and name !=''">  
+        AND d.name like #{name,jdbcType=VARCHAR}  
+    </if>  
+    <if test="now != null and now !=''">  
+        AND d.now = #{now,jdbcType=VARCHAR}  
+    </if>  
+    ORDER BY doctor_id
+	</select>  
+	
+    <delete id="deleteDoctor" parameterType="int">
+    	delete from doctor where doctor_id=#{doctor_id}
+    </delete>
+    
+    <update id="updateDoctor" parameterType="com.sjz.entity.Doctor">
+    	update doctor
+    	<trim prefix="SET" suffixOverrides=",">
+    		<if test="major!=null">
+    			major=#{major},
+    		</if>
+    		<if test="hospital!=null">
+    			hospital=#{hospital},
+    		</if>
+    		<if test="workTime!=null">
+    			workTime=#{workTime},
+    		</if>
+    		<if test="now!=null">
+    			now=#{now}
+    		</if>
+    	</trim>
+    	where doctor_id=#{doctor_id}
+    </update>
+    
+    <select id="selectDoctorOn" resultType="com.sjz.entity.Doctor">
+    	select d.doctor_id,d.name,d.major,d.hospital,d.workTime,d.id,d.now from doctor d join person p 
+    	on d.id=p.id and p.state=1
+    </select>
+</mapper>  

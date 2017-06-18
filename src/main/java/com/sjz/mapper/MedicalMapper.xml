@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.sjz.dao.MedicalDao">  
+<!--设置domain类和数据库中表的字段一一对应，注意数据库字段和domain类中的字段名称不致，此处一定要！-->  
+    <resultMap id="BaseResultMap" type="com.sjz.entity.Medical">  
+        <id column="medical_id" property="medical_id" jdbcType="INTEGER" />  
+        <result column="mname" property="mname" jdbcType="VARCHAR" />  
+        <result column="ename" property="ename" jdbcType="VARCHAR" />
+        <result column="mcharacteristic"      property="mcharacteristic" jdbcType="VARCHAR"/>  
+        <result column="mfunction"      property="mfunction" jdbcType="VARCHAR"/>  
+        <result column="side_effect"    property="side_effect" jdbcType="VARCHAR"/>  
+        <result column="mGrowth_envir"     property="mGrowth_envir" jdbcType="VARCHAR"/>  
+        <result column="source"    property="source" jdbcType="VARCHAR"/> 
+    </resultMap>  
+    
+    <select id="selectMedicalById" parameterType="int" resultMap="BaseResultMap">
+    	select * from medical where medical_id=#{medical_id}
+    </select>
+    
+    <select id="selectMedicalByName" parameterType="java.lang.String" resultMap="BaseResultMap">  
+    SELECT *  
+    FROM medical  
+    WHERE 1 = 1  
+    <if test="mname != null and mname !=''">  
+        AND mname like #{mname,jdbcType=VARCHAR} 
+    </if>  
+    ORDER BY medical_id 
+	</select>  
+	
+	<insert id="save" parameterType="com.sjz.entity.Medical">
+		insert into medical 
+		(mname,ename,mcharacteristic,mfunction,side_effect,mGrowth_envir,source)
+		values(#{mname},
+		#{ename},
+		#{mcharacteristic},
+		#{mfunction},
+		#{side_effect},
+		#{mGrowth_envir},
+		#{source})
+	</insert>
+    
+    <delete id="deleteMedicalById" parameterType="int">
+    	delete from medical where medical_id=#{medical_id}
+    </delete>
+    
+    <update id="updateMedical" parameterType="com.sjz.entity.Medical">
+    	update  medical 
+    	<trim prefix="SET" suffixOverrides=","> 
+    		<if test="mname!=null">
+    			mname=#{mname},
+    		</if>
+    		<if test="ename!=null">
+    			ename=#{ename},
+    		</if>
+    		<if test="mcharacteristic!=null">
+    			mcharacteristic=#{mcharacteristic},
+    		</if>
+    		<if test="mfunction!=null">
+    			mfunction=#{mfunction},
+    		</if>
+    		<if test="side_effect!=null">
+    			side_effect=#{side_effect},
+    		</if>
+    		<if test="mGrowth_envir!=null">
+    			mGrowth_envir=#{mGrowth_envir},
+    		</if>
+    		<if test="source!=null">
+    			source=#{source},
+    		</if>
+    	</trim>
+    	where medical_id=#{medical_id}
+    </update>
+    
+</mapper>  
